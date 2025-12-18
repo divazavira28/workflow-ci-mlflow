@@ -26,5 +26,4 @@ jobs:
       - name: Run MLflow Project
         run: |
           cd MLProject
-          export PYTHONPATH=$PWD
-          mlflow run .
+          mlflow run . --env-manager=local
