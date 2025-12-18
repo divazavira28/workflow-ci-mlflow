@@ -18,11 +18,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install MLflow
+      - name: Install dependencies
         run: |
           pip install mlflow==2.19.0
+          pip install numpy pandas scikit-learn dagshub
 
       - name: Run MLflow Project
         run: |
           cd MLProject
-          mlflow run . 
+          export PYTHONPATH=$PWD
+          mlflow run .
