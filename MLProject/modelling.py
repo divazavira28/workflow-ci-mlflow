@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import mlflow
 import mlflow.sklearn
@@ -15,7 +16,7 @@ y_train = np.load("y_train.npy", allow_pickle=True)
 y_test  = np.load("y_test.npy", allow_pickle=True)
 
 # =====================
-# FIX OBJECT -> DENSE
+# FIX SPARSE / OBJECT
 # =====================
 if isinstance(X_train, np.ndarray) and X_train.dtype == object:
     X_train = X_train.item()
@@ -28,12 +29,8 @@ if issparse(X_test):
     X_test = X_test.toarray()
 
 # =====================
-# EXPERIMENT
+# TRAIN MODEL
 # =====================
-mlflow.set_experiment("HousePrices_CI")
-
-# ❌ JANGAN start_run() — MLflow Project SUDAH BUAT RUN
-
 model = RandomForestRegressor(
     n_estimators=200,
     max_depth=15,
@@ -48,7 +45,7 @@ rmse = mean_squared_error(y_test, y_pred) ** 0.5
 r2 = r2_score(y_test, y_pred)
 
 # =====================
-# LOGGING
+# LOGGING (AMAN)
 # =====================
 mlflow.log_param("model", "RandomForest")
 mlflow.log_param("n_estimators", 200)
