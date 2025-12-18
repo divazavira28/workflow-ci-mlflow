@@ -4,19 +4,35 @@ import mlflow.sklearn
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from scipy.sparse import issparse
 
 # =====================
-# LOAD DATA 
+# LOAD DATA
 # =====================
-X_train = np.load("X_train.npy")
-X_test  = np.load("X_test.npy")
-y_train = np.load("y_train.npy")
-y_test  = np.load("y_test.npy")
+X_train = np.load("X_train.npy", allow_pickle=True)
+X_test  = np.load("X_test.npy", allow_pickle=True)
+y_train = np.load("y_train.npy", allow_pickle=True)
+y_test  = np.load("y_test.npy", allow_pickle=True)
+
+# =====================
+# FIX OBJECT -> DENSE
+# =====================
+if isinstance(X_train, np.ndarray) and X_train.dtype == object:
+    X_train = X_train.item()
+if isinstance(X_test, np.ndarray) and X_test.dtype == object:
+    X_test = X_test.item()
+
+if issparse(X_train):
+    X_train = X_train.toarray()
+if issparse(X_test):
+    X_test = X_test.toarray()
 
 # =====================
 # EXPERIMENT
 # =====================
 mlflow.set_experiment("HousePrices_CI")
+
+# ❌ JANGAN start_run() — MLflow Project SUDAH BUAT RUN
 
 model = RandomForestRegressor(
     n_estimators=200,
